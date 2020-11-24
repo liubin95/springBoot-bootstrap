@@ -143,6 +143,17 @@ public class SpringWebConfig implements WebMvcConfigurer {
     @Bean
     public MappingJackson2HttpMessageConverter customJackson2HttpMessageConverter() {
         MappingJackson2HttpMessageConverter jsonConverter = new MappingJackson2HttpMessageConverter();
+        jsonConverter.setObjectMapper(objectMapper());
+        return jsonConverter;
+    }
+
+    /**
+     * jackSon 的 ObjectMapper
+     *
+     * @return ObjectMapper
+     */
+    @Bean
+    public ObjectMapper objectMapper() {
         // 序列化设置
         final ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
@@ -159,7 +170,6 @@ public class SpringWebConfig implements WebMvcConfigurer {
         javaTimeModule.addSerializer(LocalTime.class, new LocalTimeSerializer(CommonConstant.TIME_FORMATTER));
 
         objectMapper.registerModule(simpleModule).registerModule(javaTimeModule);
-        jsonConverter.setObjectMapper(objectMapper);
-        return jsonConverter;
+        return objectMapper;
     }
 }

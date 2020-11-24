@@ -7,7 +7,11 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import com.auth0.jwt.JWT;
@@ -28,6 +32,8 @@ import com.caomu.bootstrap.constant.CommonConstant;
 @Component
 public class TokenInterceptor implements HandlerInterceptor {
 
+    public static final Logger LOGGER = LoggerFactory.getLogger(TokenInterceptor.class);
+
     @Resource
     private CaoMuProperties caoMuProperties;
 
@@ -38,8 +44,9 @@ public class TokenInterceptor implements HandlerInterceptor {
         String token = httpServletRequest.getHeader(CommonConstant.HEADER_TOKEN_KEY);
 
         // 执行认证
-        if (token == null) {
+        if (token == null || StringUtils.isBlank(token)) {
             httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "token为空");
+            LOGGER.error("token为空：{}", ((HandlerMethod) object).getShortLogMessage());
             return false;
         } else {
             try {
@@ -49,16 +56,20 @@ public class TokenInterceptor implements HandlerInterceptor {
                 // 判断是否过期
                 if (jwt.getExpiresAt().before(new Date())) {
                     httpServletResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "token过期");
+                    LOGGER.error("token过期：{}", ((HandlerMethod) object).getShortLogMessage());
                     return false;
                 }
             } catch (JWTDecodeException e) {
                 httpServletResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "token校验失败");
+                LOGGER.error("token校验失败：{}", ((HandlerMethod) object).getShortLogMessage());
                 return false;
             } catch (TokenExpiredException e) {
                 httpServletResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "token过期");
+                LOGGER.error("token过期：{}", ((HandlerMethod) object).getShortLogMessage());
                 return false;
             } catch (SignatureVerificationException e) {
                 httpServletResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "token错误");
+                LOGGER.error("token错误：{}", ((HandlerMethod) object).getShortLogMessage());
                 return false;
             }
         }
