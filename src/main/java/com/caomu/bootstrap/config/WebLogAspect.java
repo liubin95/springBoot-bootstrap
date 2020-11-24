@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.caomu.bootstrap.constant.CommonConstant;
 import com.google.gson.Gson;
 
 /**
@@ -56,18 +55,17 @@ public class WebLogAspect {
             return;
         }
         HttpServletRequest request = attributes.getRequest();
-        final Object requestId = request.getAttribute(CommonConstant.REQUEST_ID_HEADER);
 
         // 打印请求相关参数
 
         // 打印请求 url
-        LOGGER.info("{}-URL            : {}", requestId, request.getRequestURL().toString());
+        LOGGER.info("URL            : {}", request.getRequestURL().toString());
         // 打印 Http method
-        LOGGER.info("{}-HTTP Method    : {}", requestId, request.getMethod());
+        LOGGER.info("HTTP Method    : {}", request.getMethod());
         // 打印调用 controller 的全路径以及执行方法
-        LOGGER.info("{}-Class Method   : {}.{}", requestId, joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName());
+        LOGGER.info("Class Method   : {}.{}", joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName());
         // 打印请求的 IP
-        LOGGER.info("{}-IP             : {}", requestId, request.getRemoteAddr());
+        LOGGER.info("IP             : {}", request.getRemoteAddr());
         //访问目标方法的参数：
         Object[] args = joinPoint.getArgs();
         for (Object arg : args) {
@@ -78,7 +76,7 @@ public class WebLogAspect {
                 continue;
             }
             // 打印请求入参
-            LOGGER.info("{}-Request Args   : {}", requestId, gson.toJson(arg));
+            LOGGER.info("Request Args   : {}", gson.toJson(arg));
         }
     }
 }

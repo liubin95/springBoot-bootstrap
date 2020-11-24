@@ -16,6 +16,7 @@ import com.caomu.bootstrap.config.GlobalExceptionHandler;
 import com.caomu.bootstrap.config.GlobalResponseBodyHandler;
 import com.caomu.bootstrap.config.SpringWebConfig;
 import com.caomu.bootstrap.config.WebLogAspect;
+import com.caomu.bootstrap.config.mybatisplus.DruidConfig;
 import com.caomu.bootstrap.config.mybatisplus.MybatisPlusConfig;
 import com.caomu.bootstrap.interceptor.OptionsInterceptor;
 import com.caomu.bootstrap.interceptor.RequestIdInterceptor;
@@ -34,6 +35,6 @@ import com.caomu.bootstrap.token.TokenUtil;
 @Import({BeanConfig.class, GlobalExceptionHandler.class, GlobalResponseBodyHandler.class,
         SpringWebConfig.class, TokenInterceptor.class, OptionsInterceptor.class,
         RequestIdInterceptor.class, WebLogAspect.class, TokenUtil.class,
-        MybatisPlusConfig.class})
+        MybatisPlusConfig.class, DruidConfig.class})
 public @interface CommonWeb {
 }

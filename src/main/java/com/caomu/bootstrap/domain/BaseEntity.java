@@ -6,6 +6,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.boot.context.properties.bind.Bindable;
 
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * 数据库实体定义基类
@@ -13,8 +14,16 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
  * @author 刘斌
  */
 public class BaseEntity {
+    public static final String ID = "id";
+    public static final String DELETED = "deleted";
+    public static final String CREATOR_ID = "creator_id";
+    public static final String CREATE_TIME = "create_time";
+    public static final String UPDATER_ID = "updater_id";
+    public static final String UPDATE_TIME = "update_time";
+
 
     @TableLogic
+    @JsonIgnore
     public Integer deleted;
     private Long id;
     private Long creatorId;

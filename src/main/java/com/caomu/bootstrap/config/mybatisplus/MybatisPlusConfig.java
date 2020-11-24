@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.autoconfigure.MybatisPlusProperties;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusPropertiesCustomizer;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
-import com.caomu.bootstrap.constant.BaseDbConstant;
+import com.caomu.bootstrap.domain.BaseEntity;
 
 /**
  * MybatisPlus 配置类
@@ -31,7 +31,7 @@ public class MybatisPlusConfig implements MybatisPlusPropertiesCustomizer {
         globalConfig.setBanner(false);
         globalConfig.setIdentifierGenerator(idGenerator);
 
-        dbConfig.setLogicDeleteField(BaseDbConstant.DELETED);
+        dbConfig.setLogicDeleteField(BaseEntity.DELETED);
         dbConfig.setIdType(IdType.ASSIGN_ID);
 
         globalConfig.setDbConfig(dbConfig);

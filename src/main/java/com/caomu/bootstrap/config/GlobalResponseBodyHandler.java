@@ -4,7 +4,6 @@ import java.lang.reflect.Method;
 import java.util.Objects;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,12 +14,9 @@ import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import com.caomu.bootstrap.annotation.IgnoreFormattedReturn;
-import com.caomu.bootstrap.constant.CommonConstant;
 import com.caomu.bootstrap.domain.Result;
 import com.google.gson.Gson;
 
@@ -47,10 +43,7 @@ public class GlobalResponseBodyHandler implements ResponseBodyAdvice<Object> {
     @Override
     public Object beforeBodyWrite(Object body, @Nullable MethodParameter returnType, @Nullable MediaType selectedContentType, @Nullable Class<? extends HttpMessageConverter<?>> selectedConverterType, @Nullable ServerHttpRequest request, @Nullable ServerHttpResponse response) {
         // 开始打印请求日志
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpServletRequest httpServletRequest = Objects.requireNonNull(attributes).getRequest();
-        final Object requestId = httpServletRequest.getAttribute(CommonConstant.REQUEST_ID_HEADER);
-        LOGGER.info("{}-Response Args  : {}", requestId, gson.toJson(body));
+        LOGGER.info("Response Args  : {}", gson.toJson(body));
         final Method method = Objects.requireNonNull(returnType).getMethod();
         if (Objects.requireNonNull(method).isAnnotationPresent(IgnoreFormattedReturn.class)) {
             return body;

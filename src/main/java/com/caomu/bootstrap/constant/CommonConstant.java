@@ -15,6 +15,11 @@ public interface CommonConstant {
     String REQUEST_ID_HEADER = "REQUEST_ID";
 
     /**
+     * 请求开始时间
+     */
+    String START_TIME = "start_time";
+
+    /**
      * token在header中的key
      */
     String HEADER_TOKEN_KEY = "token";

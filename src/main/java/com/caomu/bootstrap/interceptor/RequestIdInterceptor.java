@@ -4,6 +4,9 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -19,17 +22,23 @@ import com.caomu.bootstrap.constant.CommonConstant;
 public class RequestIdInterceptor implements HandlerInterceptor {
 
 
+    public static final Logger LOGGER = LoggerFactory.getLogger(RequestIdInterceptor.class);
+
+
     @Resource
     private IdentifierGenerator idGenerator;
 
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object object) {
-        Object requestId = httpServletRequest.getAttribute(CommonConstant.REQUEST_ID_HEADER);
-        if (requestId == null) {
-            requestId = idGenerator.nextUUID(null);
-        }
-        httpServletRequest.setAttribute(CommonConstant.REQUEST_ID_HEADER, requestId);
+        MDC.put(CommonConstant.REQUEST_ID_HEADER, idGenerator.nextUUID(null));
+        MDC.put(CommonConstant.START_TIME, String.valueOf(System.currentTimeMillis()));
         return true;
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+        LOGGER.info("请求完成，耗时{}毫秒", System.currentTimeMillis() - (Long.parseLong(MDC.get(CommonConstant.START_TIME))));
+        MDC.clear();
     }
 }

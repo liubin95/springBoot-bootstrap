@@ -42,23 +42,6 @@
 - 生成token`generateToken`
 - 解析token`resolveToken`
 ## 持久化框架 MySQL mybatis-plus
-### 公共字段
-```java
-public interface BaseDbConstant {
-
-    String ID = "id";
-
-    String DELETED = "deleted";
-
-    String CREATOR_ID = "creator_id";
-
-    String CREATE_TIME = "create_time";
-
-    String UPDATER_ID = "updater_id";
-
-    String UPDATE_TIME = "update_time";
-}
-```
 ### mybatis-plus的全局配置
 - 删除字段
 - id类型
@@ -71,3 +54,5 @@ public interface BaseDbConstant {
 - updateById
 ### 新增分页；排序；检索方法
 - pageAndSearch
+### 集成Druid
+- 定时打印监控信息
