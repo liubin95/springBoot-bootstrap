@@ -63,10 +63,9 @@ public class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseEntity> exte
     @Override
     public boolean saveOrUpdate(T entity) {
         final BaseEntity tokenUser = getTokenUser();
+        entity.setUpdaterId(tokenUser.getId());
         if (entity.getId() == null) {
             entity.setCreatorId(tokenUser.getId());
-        } else {
-            entity.setUpdaterId(tokenUser.getId());
         }
         return super.saveOrUpdate(entity);
     }
@@ -75,10 +74,9 @@ public class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseEntity> exte
     public boolean saveOrUpdateBatch(Collection<T> entityList, int batchSize) {
         final BaseEntity tokenUser = getTokenUser();
         entityList.forEach(item -> {
+            item.setUpdaterId(tokenUser.getId());
             if (item.getId() == null) {
                 item.setCreatorId(tokenUser.getId());
-            } else {
-                item.setUpdaterId(tokenUser.getId());
             }
         });
         return super.saveOrUpdateBatch(entityList, batchSize);

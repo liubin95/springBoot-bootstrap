@@ -2,11 +2,10 @@ package com.caomu.bootstrap.config;
 
 import java.util.List;
 
-import javax.validation.ConstraintViolationException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
+import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -42,36 +41,47 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * 全局异常捕获。参数校验异常@Valid
+     * 全局异常捕获。参数校验异常
+     * 表单提交的异常
      *
      * @param exception 异常。
      * @return re
      */
-    @ExceptionHandler(ConstraintViolationException.class)
-    public Result handleConstraintViolationException(ConstraintViolationException exception) {
+    @ExceptionHandler({BindException.class})
+    public Result handleBindException(BindException exception) {
         final Result result = new Result();
         LOGGER.info("参数校验异常：", exception);
         result.setSucceeded(false);
-        result.setMsg("参数校验异常：" + exception.getMessage());
+        result.setMsg(dealObjectErrorList(exception.getBindingResult().getAllErrors()));
         return result;
     }
 
     /**
-     * 全局异常捕获。参数校验异常@Validated
+     * 全局异常捕获。参数校验异常
+     * 请求体的异常
      *
      * @param exception 异常。
      * @return re
      */
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Result handleBindException(MethodArgumentNotValidException exception) {
+    @ExceptionHandler({MethodArgumentNotValidException.class})
+    public Result handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
         final Result result = new Result();
         LOGGER.info("参数校验异常：", exception);
-        final List<ObjectError> allErrors = exception.getBindingResult().getAllErrors();
+        result.setSucceeded(false);
+        result.setMsg(dealObjectErrorList(exception.getBindingResult().getAllErrors()));
+        return result;
+    }
+
+    /**
+     * 处理ObjectError的集合
+     *
+     * @param allErrors 错误集合
+     * @return 拼接的字符串
+     */
+    private String dealObjectErrorList(List<ObjectError> allErrors) {
         final StringBuilder stringBuilder = new StringBuilder("参数校验异常：");
         allErrors.forEach(item -> stringBuilder.append(item.getDefaultMessage()));
-        result.setSucceeded(false);
-        result.setMsg(stringBuilder.toString());
-        return result;
+        return stringBuilder.toString();
     }
 
     /**
