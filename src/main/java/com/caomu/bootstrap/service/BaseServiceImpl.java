@@ -30,16 +30,25 @@ public class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseEntity> exte
     @Resource
     private TokenUtil<BaseEntity> baseEntityTokenUtil;
 
+
     /**
      * 获取request的token
+     *
+     * @return token
+     */
+    protected String getToken() {
+        final ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        final HttpServletRequest request = Objects.requireNonNull(attributes).getRequest();
+        return request.getHeader(CommonConstant.HEADER_TOKEN_KEY);
+    }
+
+    /**
+     * 获取token中的用户
      *
      * @return token中的用户
      */
     private BaseEntity getTokenUser() {
-        final ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        final HttpServletRequest request = Objects.requireNonNull(attributes).getRequest();
-        final String token = request.getHeader(CommonConstant.HEADER_TOKEN_KEY);
-        return baseEntityTokenUtil.resolveToken(token);
+        return baseEntityTokenUtil.resolveToken(getToken());
     }
 
     @Override

@@ -22,16 +22,16 @@ public class BaseEntity {
     public static final String UPDATE_TIME = "update_time";
 
 
+    /**
+     * 逻辑删除字段
+     */
     @TableLogic
     @JsonIgnore
     public Integer deleted;
     private Long id;
     private Long creatorId;
-
     private LocalDateTime createTime;
-
     private Long updaterId;
-
     private LocalDateTime updateTime;
 
     public Long getId() {
