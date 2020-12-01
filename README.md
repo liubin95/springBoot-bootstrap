@@ -56,3 +56,12 @@
 - pageAndSearch
 ### 集成Druid
 - 定时打印监控信息
+## spring security 需要redis
+- 继承`com.caomu.bootstrap.domain.BaseUserDetail` 拓展鉴权用户实体
+- 实现`org.springframework.security.core.userdetails.UserDetailsService` 中的`loadUserByUsername` 方法
+### 接口权限
+- 采用`@PreAuthorize("hasAuthority('OP::USER::DELETE')")`
+### 强制用户下线
+- 删除redis中map用户id的值
+### 重复登录问题
+TODO

@@ -30,6 +30,17 @@ public class CaoMuProperties {
      */
     private Duration tokenExpiresTime = Duration.ofHours(2);
 
+    /**
+     * 登录的接口url
+     */
+    private String loginProcessingUrl = "/login";
+
+
+    /**
+     * 注销的路径
+     */
+    private String logoutUrl = "/logout";
+
 
     public List<String> getTokenExcludeUrl() {
         return tokenExcludeUrl;
@@ -53,5 +64,21 @@ public class CaoMuProperties {
 
     public void setTokenExpiresTime(Duration tokenExpiresTime) {
         this.tokenExpiresTime = tokenExpiresTime;
+    }
+
+    public String getLoginProcessingUrl() {
+        return loginProcessingUrl;
+    }
+
+    public void setLoginProcessingUrl(String loginProcessingUrl) {
+        this.loginProcessingUrl = loginProcessingUrl;
+    }
+
+    public String getLogoutUrl() {
+        return logoutUrl;
+    }
+
+    public void setLogoutUrl(String logoutUrl) {
+        this.logoutUrl = logoutUrl;
     }
 }

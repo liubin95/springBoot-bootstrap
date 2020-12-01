@@ -2,20 +2,15 @@ package com.caomu.bootstrap.service;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.Objects;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.caomu.bootstrap.constant.CommonConstant;
 import com.caomu.bootstrap.domain.BaseEntity;
 import com.caomu.bootstrap.domain.Page;
 import com.caomu.bootstrap.token.TokenUtil;
@@ -31,61 +26,37 @@ public class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseEntity> exte
     private TokenUtil<BaseEntity> baseEntityTokenUtil;
 
 
-    /**
-     * 获取request的token
-     *
-     * @return token
-     */
-    protected String getToken() {
-        final ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        final HttpServletRequest request = Objects.requireNonNull(attributes).getRequest();
-        return request.getHeader(CommonConstant.HEADER_TOKEN_KEY);
-    }
-
-    /**
-     * 获取token中的用户
-     *
-     * @return token中的用户
-     */
-    private BaseEntity getTokenUser() {
-        return baseEntityTokenUtil.resolveToken(getToken());
-    }
-
     @Override
     public boolean save(T entity) {
-        final BaseEntity tokenUser = getTokenUser();
-        entity.setUpdaterId(tokenUser.getId());
-        entity.setCreatorId(tokenUser.getId());
+        entity.setUpdaterId(baseEntityTokenUtil.userIdFromSecurity());
+        entity.setCreatorId(baseEntityTokenUtil.userIdFromSecurity());
         return super.save(entity);
     }
 
     @Override
     public boolean saveBatch(Collection<T> entityList, int batchSize) {
-        final BaseEntity tokenUser = getTokenUser();
         entityList.forEach(item -> {
-            item.setUpdaterId(tokenUser.getId());
-            item.setCreatorId(tokenUser.getId());
+            item.setUpdaterId(baseEntityTokenUtil.userIdFromSecurity());
+            item.setCreatorId(baseEntityTokenUtil.userIdFromSecurity());
         });
         return super.saveBatch(entityList, batchSize);
     }
 
     @Override
     public boolean saveOrUpdate(T entity) {
-        final BaseEntity tokenUser = getTokenUser();
-        entity.setUpdaterId(tokenUser.getId());
+        entity.setUpdaterId(baseEntityTokenUtil.userIdFromSecurity());
         if (entity.getId() == null) {
-            entity.setCreatorId(tokenUser.getId());
+            entity.setCreatorId(baseEntityTokenUtil.userIdFromSecurity());
         }
         return super.saveOrUpdate(entity);
     }
 
     @Override
     public boolean saveOrUpdateBatch(Collection<T> entityList, int batchSize) {
-        final BaseEntity tokenUser = getTokenUser();
         entityList.forEach(item -> {
-            item.setUpdaterId(tokenUser.getId());
+            item.setUpdaterId(baseEntityTokenUtil.userIdFromSecurity());
             if (item.getId() == null) {
-                item.setCreatorId(tokenUser.getId());
+                item.setCreatorId(baseEntityTokenUtil.userIdFromSecurity());
             }
         });
         return super.saveOrUpdateBatch(entityList, batchSize);
@@ -93,15 +64,13 @@ public class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseEntity> exte
 
     @Override
     public boolean updateBatchById(Collection<T> entityList, int batchSize) {
-        final BaseEntity tokenUser = getTokenUser();
-        entityList.forEach(item -> item.setUpdaterId(tokenUser.getId()));
+        entityList.forEach(item -> item.setUpdaterId(baseEntityTokenUtil.userIdFromSecurity()));
         return super.updateBatchById(entityList, batchSize);
     }
 
     @Override
     public boolean updateById(T entity) {
-        final BaseEntity tokenUser = getTokenUser();
-        entity.setUpdaterId(tokenUser.getId());
+        entity.setUpdaterId(baseEntityTokenUtil.userIdFromSecurity());
         return super.updateById(entity);
     }
 

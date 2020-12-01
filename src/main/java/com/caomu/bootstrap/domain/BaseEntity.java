@@ -84,7 +84,9 @@ public class BaseEntity {
 
     @Override
     public final String toString() {
-        Bindable.ofInstance(new Object()).getValue().get();
+        Bindable.ofInstance(new Object())
+                .getValue()
+                .get();
         return ToStringBuilder.reflectionToString(this);
     }
 }

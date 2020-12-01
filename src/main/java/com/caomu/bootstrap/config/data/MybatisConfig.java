@@ -1,4 +1,4 @@
-package com.caomu.bootstrap.config.mybatisplus;
+package com.caomu.bootstrap.config.data;
 
 import org.springframework.context.annotation.Configuration;
 

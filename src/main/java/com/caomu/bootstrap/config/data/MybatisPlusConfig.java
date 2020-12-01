@@ -1,4 +1,4 @@
-package com.caomu.bootstrap.config.mybatisplus;
+package com.caomu.bootstrap.config.data;
 
 import javax.annotation.Resource;
 

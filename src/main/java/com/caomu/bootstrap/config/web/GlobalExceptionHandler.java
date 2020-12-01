@@ -1,16 +1,19 @@
-package com.caomu.bootstrap.config;
+package com.caomu.bootstrap.config.web;
 
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.caomu.bootstrap.config.BusinessRuntimeException;
+import com.caomu.bootstrap.config.security.AuthenticationHandler;
 import com.caomu.bootstrap.constant.CommonConstant;
 import com.caomu.bootstrap.domain.Result;
 
@@ -52,7 +55,8 @@ public class GlobalExceptionHandler {
         final Result result = new Result();
         LOGGER.info("参数校验异常：", exception);
         result.setSucceeded(false);
-        result.setMsg(dealObjectErrorList(exception.getBindingResult().getAllErrors()));
+        result.setMsg(dealObjectErrorList(exception.getBindingResult()
+                                                   .getAllErrors()));
         return result;
     }
 
@@ -68,7 +72,8 @@ public class GlobalExceptionHandler {
         final Result result = new Result();
         LOGGER.info("参数校验异常：", exception);
         result.setSucceeded(false);
-        result.setMsg(dealObjectErrorList(exception.getBindingResult().getAllErrors()));
+        result.setMsg(dealObjectErrorList(exception.getBindingResult()
+                                                   .getAllErrors()));
         return result;
     }
 
@@ -82,6 +87,17 @@ public class GlobalExceptionHandler {
         final StringBuilder stringBuilder = new StringBuilder("参数校验异常：");
         allErrors.forEach(item -> stringBuilder.append(item.getDefaultMessage()));
         return stringBuilder.toString();
+    }
+
+    /**
+     * 权限不足的异常 会在{@link AuthenticationHandler#handle} 中处理
+     *
+     * @param accessDeniedException 权限异常
+     * @throws AccessDeniedException 权限异常
+     */
+    @ExceptionHandler(AccessDeniedException.class)
+    public void handleAccessDeniedException(AccessDeniedException accessDeniedException) throws AccessDeniedException {
+        throw accessDeniedException;
     }
 
     /**

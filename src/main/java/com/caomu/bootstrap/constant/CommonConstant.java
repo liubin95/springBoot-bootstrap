@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 public interface CommonConstant {
 
     /**
-     * 设置响应头，响应头名字（惯例是大写）
+     * 请求唯一ID，标识
      */
     String REQUEST_ID_HEADER = "REQUEST_ID";
 
@@ -20,9 +20,29 @@ public interface CommonConstant {
     String START_TIME = "start_time";
 
     /**
+     * 响应的默认ContentType
+     */
+    String RESPONSE_CONTENT_TYPE = "application/json;charset=utf-8";
+
+    /**
      * token在header中的key
      */
-    String HEADER_TOKEN_KEY = "token";
+    String HEADER_TOKEN_KEY = "Authorization";
+
+    /**
+     * token中用户的key
+     */
+    String TOKEN_USER_KEY = "customer";
+
+    /**
+     * token的前缀
+     */
+    String TOKEN_PREFIX = "Bearer ";
+
+    /**
+     * redis中已登录用户权限信息map 的名字
+     */
+    String REDIS_AUTH_MAP_NAME = "AUTH-ID-USER";
 
 
     /**
@@ -48,8 +68,4 @@ public interface CommonConstant {
     DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
 
 
-    /**
-     * token中用户的key
-     */
-    String TOKEN_USER_KEY = "customer";
 }

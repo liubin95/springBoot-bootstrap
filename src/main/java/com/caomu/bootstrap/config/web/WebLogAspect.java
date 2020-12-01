@@ -1,4 +1,4 @@
-package com.caomu.bootstrap.config;
+package com.caomu.bootstrap.config.web;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -59,11 +59,14 @@ public class WebLogAspect {
         // 打印请求相关参数
 
         // 打印请求 url
-        LOGGER.info("URL            : {}", request.getRequestURL().toString());
+        LOGGER.info("URL            : {}", request.getRequestURL()
+                                                  .toString());
         // 打印 Http method
         LOGGER.info("HTTP Method    : {}", request.getMethod());
         // 打印调用 controller 的全路径以及执行方法
-        LOGGER.info("Class Method   : {}.{}", joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName());
+        LOGGER.info("Class Method   : {}.{}", joinPoint.getSignature()
+                                                       .getDeclaringTypeName(), joinPoint.getSignature()
+                                                                                         .getName());
         // 打印请求的 IP
         LOGGER.info("IP             : {}", request.getRemoteAddr());
         //访问目标方法的参数：

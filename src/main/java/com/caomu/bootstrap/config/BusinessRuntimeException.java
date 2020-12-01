@@ -23,7 +23,8 @@ public class BusinessRuntimeException extends RuntimeException {
         super(cause);
     }
 
-    protected BusinessRuntimeException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    protected BusinessRuntimeException(String message, Throwable cause, boolean enableSuppression,
+                                       boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }

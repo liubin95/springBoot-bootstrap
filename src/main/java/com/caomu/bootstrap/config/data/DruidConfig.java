@@ -1,4 +1,4 @@
-package com.caomu.bootstrap.config.mybatisplus;
+package com.caomu.bootstrap.config.data;
 
 import java.util.ArrayList;
 import java.util.List;
