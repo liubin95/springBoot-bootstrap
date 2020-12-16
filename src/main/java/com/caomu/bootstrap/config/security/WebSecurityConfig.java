@@ -1,5 +1,11 @@
 package com.caomu.bootstrap.config.security;
 
+import com.caomu.bootstrap.config.CaoMuProperties;
+import com.caomu.bootstrap.domain.BaseEntity;
+import com.caomu.bootstrap.domain.BaseUserDetail;
+import com.caomu.bootstrap.filter.RequestIdFilter;
+import com.caomu.bootstrap.filter.TokenFilter;
+import com.caomu.bootstrap.token.TokenUtil;
 import org.redisson.api.RMapCache;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
@@ -19,13 +25,6 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 
-import com.caomu.bootstrap.config.CaoMuProperties;
-import com.caomu.bootstrap.domain.BaseEntity;
-import com.caomu.bootstrap.domain.BaseUserDetail;
-import com.caomu.bootstrap.filter.RequestIdFilter;
-import com.caomu.bootstrap.filter.TokenFilter;
-import com.caomu.bootstrap.token.TokenUtil;
-
 /**
  * spring-security 的相关配置
  *
@@ -38,43 +37,58 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     private final AuthenticationFailureHandler failureHandler;
+
     private final AuthenticationSuccessHandler successHandler;
+
     private final AuthenticationEntryPoint authenticationEntryPoint;
+
     private final LogoutSuccessHandler logoutSuccessHandler;
+
     private final AccessDeniedHandler accessDeniedHandler;
+
     private final PasswordEncoder passwordEncoder;
+
     private final TokenUtil<BaseEntity> baseEntityTokenUtil;
+
     private final RMapCache<Long, BaseUserDetail> authIdUserMap;
+
     private final CaoMuProperties caoMuProperties;
+
     private final RequestIdFilter requestIdFilter;
+
     /**
      * 需要自己装配一个
      */
     private final UserDetailsService userDetailsService;
 
-    public WebSecurityConfig(PasswordEncoder passwordEncoder, TokenUtil<BaseEntity> baseEntityTokenUtil,
-                             CaoMuProperties caoMuProperties, RMapCache<Long, BaseUserDetail> authIdUserMap,
-                             RequestIdFilter requestIdFilter, UserDetailsService userDetailsService,
+    public WebSecurityConfig(PasswordEncoder passwordEncoder,
+                             TokenUtil<BaseEntity> baseEntityTokenUtil,
+                             CaoMuProperties caoMuProperties,
+                             RMapCache<Long, BaseUserDetail> authIdUserMap,
+                             RequestIdFilter requestIdFilter,
+                             UserDetailsService userDetailsService,
                              @Qualifier("AuthenticationHandler") AuthenticationFailureHandler failureHandler,
                              @Qualifier("AuthenticationHandler") AuthenticationSuccessHandler successHandler,
                              @Qualifier("AuthenticationHandler") AuthenticationEntryPoint authenticationEntryPoint,
                              @Qualifier("AuthenticationHandler") LogoutSuccessHandler logoutSuccessHandler,
                              @Qualifier("AuthenticationHandler") AccessDeniedHandler accessDeniedHandler) {
-        this.passwordEncoder = passwordEncoder;
-        this.failureHandler = failureHandler;
-        this.successHandler = successHandler;
+
+        this.passwordEncoder          = passwordEncoder;
+        this.failureHandler           = failureHandler;
+        this.successHandler           = successHandler;
         this.authenticationEntryPoint = authenticationEntryPoint;
-        this.logoutSuccessHandler = logoutSuccessHandler;
-        this.baseEntityTokenUtil = baseEntityTokenUtil;
-        this.caoMuProperties = caoMuProperties;
-        this.accessDeniedHandler = accessDeniedHandler;
-        this.authIdUserMap = authIdUserMap;
-        this.requestIdFilter = requestIdFilter;
-        this.userDetailsService = userDetailsService;
+        this.logoutSuccessHandler     = logoutSuccessHandler;
+        this.baseEntityTokenUtil      = baseEntityTokenUtil;
+        this.caoMuProperties          = caoMuProperties;
+        this.accessDeniedHandler      = accessDeniedHandler;
+        this.authIdUserMap            = authIdUserMap;
+        this.requestIdFilter          = requestIdFilter;
+        this.userDetailsService       = userDetailsService;
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
         final String[] strings = caoMuProperties.getTokenExcludeUrl()
                                                 .toArray(new String[0]);
         http.authorizeRequests()
@@ -127,9 +141,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) {
+
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder);
         auth.authenticationProvider(authProvider);
     }
+
 }

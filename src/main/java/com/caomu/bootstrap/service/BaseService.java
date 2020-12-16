@@ -17,5 +17,6 @@ public interface BaseService<T> extends IService<T> {
      * @param page 分页对象
      * @return 分页对象
      */
-    IPage<T> pageAndSearch(Page<T> page);
+    IPage<T> pageAndSearchAndFilter(Page<T> page);
+
 }

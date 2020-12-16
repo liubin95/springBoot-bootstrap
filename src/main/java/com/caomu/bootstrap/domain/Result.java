@@ -30,31 +30,39 @@ public class Result implements Serializable {
     private Object obj;
 
     public Result() {
+
         this.succeeded = true;
         this.setMsg("操作成功");
     }
 
     public Boolean getSucceeded() {
+
         return succeeded;
     }
 
     public void setSucceeded(Boolean succeeded) {
+
         this.succeeded = succeeded;
     }
 
     public String getMsg() {
+
         return msg;
     }
 
     public void setMsg(String msg) {
+
         this.msg = msg;
     }
 
     public Object getObj() {
+
         return obj;
     }
 
     public void setObj(Object obj) {
+
         this.obj = obj;
     }
+
 }

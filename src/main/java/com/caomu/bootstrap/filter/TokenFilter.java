@@ -1,13 +1,9 @@
 package com.caomu.bootstrap.filter;
 
-import java.io.IOException;
-import java.util.Objects;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.caomu.bootstrap.constant.CommonConstant;
+import com.caomu.bootstrap.domain.BaseEntity;
+import com.caomu.bootstrap.domain.BaseUserDetail;
+import com.caomu.bootstrap.token.TokenUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RMapCache;
 import org.slf4j.Logger;
@@ -18,10 +14,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-import com.caomu.bootstrap.constant.CommonConstant;
-import com.caomu.bootstrap.domain.BaseEntity;
-import com.caomu.bootstrap.domain.BaseUserDetail;
-import com.caomu.bootstrap.token.TokenUtil;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Objects;
 
 /**
  * 解析token，并且填充SecurityContextHolder中的用户信息
@@ -36,17 +34,21 @@ public class TokenFilter extends BasicAuthenticationFilter {
 
     private final RMapCache<Long, BaseUserDetail> mapCache;
 
-    public TokenFilter(TokenUtil<BaseEntity> baseEntityTokenUtil, RMapCache<Long, BaseUserDetail> authIdUserMap,
+    public TokenFilter(TokenUtil<BaseEntity> baseEntityTokenUtil,
+                       RMapCache<Long, BaseUserDetail> authIdUserMap,
                        AuthenticationManager authenticationManager) {
+
         super(authenticationManager);
-        this.mapCache = authIdUserMap;
+        this.mapCache            = authIdUserMap;
         this.baseEntityTokenUtil = baseEntityTokenUtil;
     }
 
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+
         String token = request.getHeader(CommonConstant.HEADER_TOKEN_KEY);
         if (StringUtils.isNotBlank(token)) {
             token = token.replace(CommonConstant.TOKEN_PREFIX, "");
@@ -67,4 +69,5 @@ public class TokenFilter extends BasicAuthenticationFilter {
         // 调用后续的Filter,如果上面的代码逻辑未能复原“session”，SecurityContext中没有想过信息，后面的流程会检测出"需要登录"
         filterChain.doFilter(request, response);
     }
+
 }

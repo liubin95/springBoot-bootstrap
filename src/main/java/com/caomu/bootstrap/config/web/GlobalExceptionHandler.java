@@ -1,21 +1,22 @@
 package com.caomu.bootstrap.config.web;
 
-import java.util.List;
-
+import com.caomu.bootstrap.config.BusinessRuntimeException;
+import com.caomu.bootstrap.config.security.AuthenticationHandler;
+import com.caomu.bootstrap.constant.CommonConstant;
+import com.caomu.bootstrap.domain.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.caomu.bootstrap.config.BusinessRuntimeException;
-import com.caomu.bootstrap.config.security.AuthenticationHandler;
-import com.caomu.bootstrap.constant.CommonConstant;
-import com.caomu.bootstrap.domain.Result;
+import java.util.List;
 
 
 /**
@@ -51,6 +52,7 @@ public class GlobalExceptionHandler {
      * @return re
      */
     @ExceptionHandler({BindException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Result handleBindException(BindException exception) {
         final Result result = new Result();
         LOGGER.info("参数校验异常：", exception);
@@ -68,6 +70,7 @@ public class GlobalExceptionHandler {
      * @return re
      */
     @ExceptionHandler({MethodArgumentNotValidException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Result handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
         final Result result = new Result();
         LOGGER.info("参数校验异常：", exception);
@@ -96,6 +99,7 @@ public class GlobalExceptionHandler {
      * @throws AccessDeniedException 权限异常
      */
     @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     public void handleAccessDeniedException(AccessDeniedException accessDeniedException) throws AccessDeniedException {
         throw accessDeniedException;
     }
@@ -107,11 +111,13 @@ public class GlobalExceptionHandler {
      * @return re
      */
     @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Result handleException(Exception exception) {
         final Result result = new Result();
         LOGGER.error("ApiException 异常抛出", exception);
         result.setSucceeded(false);
-        result.setMsg(String.format("服务器异常，请重试，或者联系管理员。%s", MDC.get(CommonConstant.REQUEST_ID_HEADER)));
+        result.setMsg(MDC.get(CommonConstant.REQUEST_ID_HEADER));
         return result;
     }
+
 }

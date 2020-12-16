@@ -1,19 +1,5 @@
 package com.caomu.bootstrap.token;
 
-import java.lang.reflect.Type;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.Resource;
-
-import org.springframework.context.annotation.Scope;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
-
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -23,6 +9,18 @@ import com.caomu.bootstrap.config.CaoMuProperties;
 import com.caomu.bootstrap.constant.CommonConstant;
 import com.caomu.bootstrap.domain.BaseEntity;
 import com.google.gson.Gson;
+import org.springframework.context.annotation.Scope;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
+
+import javax.annotation.Resource;
+import java.lang.reflect.Type;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * token相关工具类
@@ -42,9 +40,11 @@ public class TokenUtil<T extends BaseEntity> {
     private Type t;
 
     private TokenUtil() {
+
     }
 
     public TokenUtil(Type t) {
+
         Assert.notNull(t, "type can not be null");
         this.t = t;
     }
@@ -56,7 +56,9 @@ public class TokenUtil<T extends BaseEntity> {
      * @param duration 可以定义过期时间
      * @return token
      */
-    public String generateToken(T object, Duration duration) {
+    public String generateToken(T object,
+                                Duration duration) {
+
         final Map<String, Object> tokenHeader = new HashMap<>(2);
         tokenHeader.put("alg", "HMAC256");
         tokenHeader.put("typ", "JWT");
@@ -79,6 +81,7 @@ public class TokenUtil<T extends BaseEntity> {
      * @return token
      */
     public String generateToken(T object) {
+
         return this.generateToken(object, caoMuProperties.getTokenExpiresTime());
     }
 
@@ -93,7 +96,7 @@ public class TokenUtil<T extends BaseEntity> {
         // 验证 token
         JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(caoMuProperties.getTokenSecret()))
                                      .build();
-        DecodedJWT jwt = jwtVerifier.verify(token);
+        DecodedJWT         jwt = jwtVerifier.verify(token);
         Map<String, Claim> map = jwt.getClaims();
         return gson.fromJson(map.get(CommonConstant.TOKEN_USER_KEY)
                                 .asString(), t);
@@ -105,8 +108,10 @@ public class TokenUtil<T extends BaseEntity> {
      * @return id
      */
     public Long userIdFromSecurity() {
+
         return (long) SecurityContextHolder.getContext()
                                            .getAuthentication()
                                            .getPrincipal();
     }
+
 }

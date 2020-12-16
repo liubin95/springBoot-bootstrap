@@ -1,15 +1,14 @@
 package com.caomu.bootstrap.config.data;
 
-import javax.annotation.Resource;
-
-import org.springframework.context.annotation.Configuration;
-
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusProperties;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusPropertiesCustomizer;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
 import com.caomu.bootstrap.domain.BaseEntity;
+import org.springframework.context.annotation.Configuration;
+
+import javax.annotation.Resource;
 
 /**
  * MybatisPlus 配置类
@@ -25,8 +24,9 @@ public class MybatisPlusConfig implements MybatisPlusPropertiesCustomizer {
 
     @Override
     public void customize(MybatisPlusProperties properties) {
-        final GlobalConfig globalConfig = new GlobalConfig();
-        final GlobalConfig.DbConfig dbConfig = new GlobalConfig.DbConfig();
+
+        final GlobalConfig          globalConfig = new GlobalConfig();
+        final GlobalConfig.DbConfig dbConfig     = new GlobalConfig.DbConfig();
 
         globalConfig.setBanner(false);
         globalConfig.setIdentifierGenerator(idGenerator);
@@ -37,4 +37,5 @@ public class MybatisPlusConfig implements MybatisPlusPropertiesCustomizer {
         globalConfig.setDbConfig(dbConfig);
         properties.setGlobalConfig(globalConfig);
     }
+
 }

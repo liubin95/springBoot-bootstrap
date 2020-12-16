@@ -1,9 +1,6 @@
 package com.caomu.bootstrap.config.web;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.google.gson.Gson;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -14,7 +11,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.google.gson.Gson;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * web日志打印。
@@ -40,6 +39,7 @@ public class WebLogAspect {
      */
     @Pointcut("execution(* com.caomu..*.controller..*.*(..))")
     public void webLog() {
+
     }
 
     /**
@@ -82,4 +82,5 @@ public class WebLogAspect {
             LOGGER.info("Request Args   : {}", gson.toJson(arg));
         }
     }
+
 }

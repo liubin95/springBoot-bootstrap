@@ -1,10 +1,9 @@
 package com.caomu.bootstrap.config.web;
 
-import java.lang.reflect.Method;
-import java.util.Objects;
-
-import javax.annotation.Resource;
-
+import com.caomu.bootstrap.annotation.IgnoreFormattedReturn;
+import com.caomu.bootstrap.constant.CommonConstant;
+import com.caomu.bootstrap.domain.Result;
+import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -17,10 +16,9 @@ import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-import com.caomu.bootstrap.annotation.IgnoreFormattedReturn;
-import com.caomu.bootstrap.constant.CommonConstant;
-import com.caomu.bootstrap.domain.Result;
-import com.google.gson.Gson;
+import javax.annotation.Resource;
+import java.lang.reflect.Method;
+import java.util.Objects;
 
 
 /**
@@ -39,15 +37,18 @@ public class GlobalResponseBodyHandler implements ResponseBodyAdvice<Object> {
     @Override
     public boolean supports(@Nullable MethodParameter returnType,
                             @Nullable Class<? extends HttpMessageConverter<?>> converterType) {
+
         return true;
     }
 
     @SuppressWarnings("AlibabaRemoveCommentedCode")
     @Override
-    public Object beforeBodyWrite(Object body, @Nullable MethodParameter returnType,
+    public Object beforeBodyWrite(Object body,
+                                  @Nullable MethodParameter returnType,
                                   @Nullable MediaType selectedContentType,
                                   @Nullable Class<? extends HttpMessageConverter<?>> selectedConverterType,
-                                  @Nullable ServerHttpRequest request, @Nullable ServerHttpResponse response) {
+                                  @Nullable ServerHttpRequest request,
+                                  @Nullable ServerHttpResponse response) {
         // 开始打印请求日志
         LOGGER.info("Response Args  : {}", gson.toJson(body));
         LOGGER.info("请求完成，耗时{}毫秒", System.currentTimeMillis() - (Long.parseLong(MDC.get(CommonConstant.START_TIME))));
@@ -73,4 +74,5 @@ public class GlobalResponseBodyHandler implements ResponseBodyAdvice<Object> {
         result.setObj(body);
         return result;
     }
+
 }

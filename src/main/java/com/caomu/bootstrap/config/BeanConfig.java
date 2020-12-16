@@ -1,16 +1,5 @@
 package com.caomu.bootstrap.config;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-
-import org.redisson.api.RMapCache;
-import org.redisson.api.RedissonClient;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.core.incrementer.DefaultIdentifierGenerator;
 import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
@@ -20,12 +9,17 @@ import com.caomu.bootstrap.constant.CommonConstant;
 import com.caomu.bootstrap.domain.BaseEntity;
 import com.caomu.bootstrap.domain.BaseUserDetail;
 import com.caomu.bootstrap.token.TokenUtil;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializer;
-import com.google.gson.LongSerializationPolicy;
+import com.google.gson.*;
+import org.redisson.api.RMapCache;
+import org.redisson.api.RedissonClient;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 /**
  * 对象配置
@@ -43,6 +37,7 @@ public class BeanConfig {
 
     @Bean
     public Gson gson() {
+
         return new GsonBuilder().setDateFormat(CommonConstant.DATE_TIME_FORMATTER_STRING)
                                 .registerTypeAdapter(LocalDateTime.class, (JsonSerializer<LocalDateTime>) (src, typeOfSrc, context) -> new JsonPrimitive(src.format(CommonConstant.DATE_TIME_FORMATTER)))
                                 .registerTypeAdapter(LocalDate.class, (JsonSerializer<LocalDate>) (src, typeOfSrc, context) -> new JsonPrimitive(src.format(CommonConstant.DATE_FORMATTER)))
@@ -56,6 +51,7 @@ public class BeanConfig {
 
     @Bean
     public IdentifierGenerator idGenerator() {
+
         return new DefaultIdentifierGenerator();
     }
 
@@ -64,6 +60,7 @@ public class BeanConfig {
      */
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
+
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
         interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
         return interceptor;
@@ -71,18 +68,22 @@ public class BeanConfig {
 
     @Bean
     public TokenUtil<BaseEntity> baseEntityTokenUtil() {
+
         return new TokenUtil<>(BaseEntity.class);
     }
 
 
     @Bean
     public PasswordEncoder passwordEncoder() {
+
         return new BCryptPasswordEncoder();
     }
 
 
     @Bean
     public RMapCache<Long, BaseUserDetail> authIdUserMap() {
+
         return redissonClient.getMapCache(CommonConstant.REDIS_AUTH_MAP_NAME);
     }
+
 }

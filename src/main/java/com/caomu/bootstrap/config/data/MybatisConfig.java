@@ -1,9 +1,8 @@
 package com.caomu.bootstrap.config.data;
 
-import org.springframework.context.annotation.Configuration;
-
 import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * mybatis 的通用配置
@@ -12,6 +11,7 @@ import com.baomidou.mybatisplus.core.MybatisConfiguration;
  */
 @Configuration
 public class MybatisConfig implements ConfigurationCustomizer {
+
     /**
      * mybatis 的通用配置
      *
@@ -19,5 +19,7 @@ public class MybatisConfig implements ConfigurationCustomizer {
      */
     @Override
     public void customize(MybatisConfiguration configuration) {
+
     }
+
 }
