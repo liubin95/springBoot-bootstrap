@@ -7,15 +7,10 @@ import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.caomu.bootstrap.config.CaoMuProperties;
 import com.caomu.bootstrap.constant.CommonConstant;
-import com.caomu.bootstrap.domain.BaseEntity;
-import com.google.gson.Gson;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 
-import javax.annotation.Resource;
-import java.lang.reflect.Type;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
@@ -29,34 +24,20 @@ import java.util.Map;
  */
 @Component
 @Scope("prototype")
-public class TokenUtil<T extends BaseEntity> {
+public class TokenUtil {
 
-    @Resource
-    private CaoMuProperties caoMuProperties;
+    private final CaoMuProperties caoMuProperties;
 
-    @Resource
-    private Gson gson;
-
-    private Type t;
-
-    private TokenUtil() {
-
-    }
-
-    public TokenUtil(Type t) {
-
-        Assert.notNull(t, "type can not be null");
-        this.t = t;
-    }
+    public TokenUtil(CaoMuProperties caoMuProperties) {this.caoMuProperties = caoMuProperties;}
 
     /**
      * 保存对象信息，生成token
      *
-     * @param object   保存的用户信息
+     * @param userId   保存的用户id
      * @param duration 可以定义过期时间
      * @return token
      */
-    public String generateToken(T object,
+    public String generateToken(Long userId,
                                 Duration duration) {
 
         final Map<String, Object> tokenHeader = new HashMap<>(2);
@@ -68,7 +49,7 @@ public class TokenUtil<T extends BaseEntity> {
         final Date expiresDate = Date.from(inst);
         return JWT.create()
                   .withHeader(tokenHeader)
-                  .withClaim(CommonConstant.TOKEN_USER_KEY, gson.toJson(object))
+                  .withClaim(CommonConstant.TOKEN_USER_KEY, userId)
                   .withIssuedAt(new Date())
                   .withExpiresAt(expiresDate)
                   .sign(Algorithm.HMAC256(caoMuProperties.getTokenSecret()));
@@ -77,12 +58,11 @@ public class TokenUtil<T extends BaseEntity> {
     /**
      * 保存对象信息，生成token，配置文件中的过期时间
      *
-     * @param object 保存的用户信息
+     * @param userId 保存的用户id
      * @return token
      */
-    public String generateToken(T object) {
-
-        return this.generateToken(object, caoMuProperties.getTokenExpiresTime());
+    public String generateToken(Long userId) {
+        return this.generateToken(userId, caoMuProperties.getTokenExpiresTime());
     }
 
 
@@ -92,14 +72,14 @@ public class TokenUtil<T extends BaseEntity> {
      * @param token token
      * @return 对象
      */
-    public T resolveToken(String token) {
+    public Long resolveToken(String token) {
         // 验证 token
         JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(caoMuProperties.getTokenSecret()))
                                      .build();
         DecodedJWT         jwt = jwtVerifier.verify(token);
         Map<String, Claim> map = jwt.getClaims();
-        return gson.fromJson(map.get(CommonConstant.TOKEN_USER_KEY)
-                                .asString(), t);
+        return map.get(CommonConstant.TOKEN_USER_KEY)
+                  .asLong();
     }
 
     /**
@@ -108,7 +88,6 @@ public class TokenUtil<T extends BaseEntity> {
      * @return id
      */
     public Long userIdFromSecurity() {
-
         return (long) SecurityContextHolder.getContext()
                                            .getAuthentication()
                                            .getPrincipal();

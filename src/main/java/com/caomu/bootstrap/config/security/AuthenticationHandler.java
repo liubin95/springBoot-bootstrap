@@ -6,7 +6,6 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.caomu.bootstrap.config.CaoMuProperties;
 import com.caomu.bootstrap.constant.CommonConstant;
-import com.caomu.bootstrap.domain.BaseEntity;
 import com.caomu.bootstrap.domain.BaseUserDetail;
 import com.caomu.bootstrap.domain.Result;
 import com.caomu.bootstrap.token.TokenUtil;
@@ -50,19 +49,19 @@ public class AuthenticationHandler implements AuthenticationFailureHandler, Auth
 
     private final RMapCache<Long, BaseUserDetail> authIdUserMap;
 
-    private final TokenUtil<BaseEntity> baseEntityTokenUtil;
+    private final TokenUtil tokenUtil;
 
     private final CaoMuProperties caoMuProperties;
 
     @Autowired
     public AuthenticationHandler(ObjectMapper objectMapper,
                                  RMapCache<Long, BaseUserDetail> authIdUserMap,
-                                 TokenUtil<BaseEntity> baseEntityTokenUtil,
+                                 TokenUtil tokenUtil,
                                  CaoMuProperties caoMuProperties) {
-        this.objectMapper        = objectMapper;
-        this.authIdUserMap       = authIdUserMap;
-        this.baseEntityTokenUtil = baseEntityTokenUtil;
-        this.caoMuProperties     = caoMuProperties;
+        this.objectMapper    = objectMapper;
+        this.authIdUserMap   = authIdUserMap;
+        this.tokenUtil       = tokenUtil;
+        this.caoMuProperties = caoMuProperties;
     }
 
     /**
@@ -173,7 +172,7 @@ public class AuthenticationHandler implements AuthenticationFailureHandler, Auth
                        HttpServletResponse response,
                        AccessDeniedException accessDeniedException) throws IOException {
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        LOGGER.error("权限不足，用户id：{}，路径：{}", baseEntityTokenUtil.userIdFromSecurity(), request.getRequestURI());
+        LOGGER.error("权限不足，用户id：{}，路径：{}", tokenUtil.userIdFromSecurity(), request.getRequestURI());
         final Result result = new Result();
         result.setSucceeded(false);
         result.setMsg(accessDeniedException.getMessage());

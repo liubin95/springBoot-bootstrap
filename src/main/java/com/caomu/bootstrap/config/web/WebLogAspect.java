@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -30,8 +29,9 @@ public class WebLogAspect {
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(WebLogAspect.class);
 
-    @Resource
-    private Gson gson;
+    private final Gson gson;
+
+    public WebLogAspect(Gson gson) {this.gson = gson;}
 
 
     /**

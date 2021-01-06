@@ -16,7 +16,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-import javax.annotation.Resource;
 import java.lang.reflect.Method;
 import java.util.Objects;
 
@@ -31,8 +30,9 @@ public class GlobalResponseBodyHandler implements ResponseBodyAdvice<Object> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalResponseBodyHandler.class);
 
-    @Resource
-    private Gson gson;
+    private final Gson gson;
+
+    public GlobalResponseBodyHandler(Gson gson) {this.gson = gson;}
 
     @Override
     public boolean supports(@Nullable MethodParameter returnType,

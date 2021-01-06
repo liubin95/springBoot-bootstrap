@@ -8,8 +8,8 @@ import com.caomu.bootstrap.domain.BaseEntity;
 import com.caomu.bootstrap.domain.Page;
 import com.caomu.bootstrap.token.TokenUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.annotation.Resource;
 import java.util.Collection;
 import java.util.Map;
 
@@ -20,15 +20,15 @@ import java.util.Map;
  */
 public class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseEntity> extends ServiceImpl<M, T> implements BaseService<T> {
 
-    @Resource
-    private TokenUtil<BaseEntity> baseEntityTokenUtil;
+    @Autowired
+    private TokenUtil tokenUtil;
 
 
     @Override
     public boolean save(T entity) {
 
-        entity.setUpdaterId(baseEntityTokenUtil.userIdFromSecurity());
-        entity.setCreatorId(baseEntityTokenUtil.userIdFromSecurity());
+        entity.setUpdaterId(tokenUtil.userIdFromSecurity());
+        entity.setCreatorId(tokenUtil.userIdFromSecurity());
         return super.save(entity);
     }
 
@@ -37,8 +37,8 @@ public class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseEntity> exte
                              int batchSize) {
 
         entityList.forEach(item -> {
-            item.setUpdaterId(baseEntityTokenUtil.userIdFromSecurity());
-            item.setCreatorId(baseEntityTokenUtil.userIdFromSecurity());
+            item.setUpdaterId(tokenUtil.userIdFromSecurity());
+            item.setCreatorId(tokenUtil.userIdFromSecurity());
         });
         return super.saveBatch(entityList, batchSize);
     }
@@ -46,9 +46,9 @@ public class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseEntity> exte
     @Override
     public boolean saveOrUpdate(T entity) {
 
-        entity.setUpdaterId(baseEntityTokenUtil.userIdFromSecurity());
+        entity.setUpdaterId(tokenUtil.userIdFromSecurity());
         if (entity.getId() == null) {
-            entity.setCreatorId(baseEntityTokenUtil.userIdFromSecurity());
+            entity.setCreatorId(tokenUtil.userIdFromSecurity());
         }
         return super.saveOrUpdate(entity);
     }
@@ -56,11 +56,10 @@ public class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseEntity> exte
     @Override
     public boolean saveOrUpdateBatch(Collection<T> entityList,
                                      int batchSize) {
-
         entityList.forEach(item -> {
-            item.setUpdaterId(baseEntityTokenUtil.userIdFromSecurity());
+            item.setUpdaterId(tokenUtil.userIdFromSecurity());
             if (item.getId() == null) {
-                item.setCreatorId(baseEntityTokenUtil.userIdFromSecurity());
+                item.setCreatorId(tokenUtil.userIdFromSecurity());
             }
         });
         return super.saveOrUpdateBatch(entityList, batchSize);
@@ -69,15 +68,13 @@ public class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseEntity> exte
     @Override
     public boolean updateBatchById(Collection<T> entityList,
                                    int batchSize) {
-
-        entityList.forEach(item -> item.setUpdaterId(baseEntityTokenUtil.userIdFromSecurity()));
+        entityList.forEach(item -> item.setUpdaterId(tokenUtil.userIdFromSecurity()));
         return super.updateBatchById(entityList, batchSize);
     }
 
     @Override
     public boolean updateById(T entity) {
-
-        entity.setUpdaterId(baseEntityTokenUtil.userIdFromSecurity());
+        entity.setUpdaterId(tokenUtil.userIdFromSecurity());
         return super.updateById(entity);
     }
 

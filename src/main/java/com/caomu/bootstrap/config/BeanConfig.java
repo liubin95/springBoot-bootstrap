@@ -6,9 +6,7 @@ import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.caomu.bootstrap.constant.CommonConstant;
-import com.caomu.bootstrap.domain.BaseEntity;
 import com.caomu.bootstrap.domain.BaseUserDetail;
-import com.caomu.bootstrap.token.TokenUtil;
 import com.google.gson.*;
 import org.redisson.api.RMapCache;
 import org.redisson.api.RedissonClient;
@@ -64,12 +62,6 @@ public class BeanConfig {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
         interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
         return interceptor;
-    }
-
-    @Bean
-    public TokenUtil<BaseEntity> baseEntityTokenUtil() {
-
-        return new TokenUtil<>(BaseEntity.class);
     }
 
 

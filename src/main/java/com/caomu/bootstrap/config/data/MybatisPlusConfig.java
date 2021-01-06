@@ -8,8 +8,6 @@ import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
 import com.caomu.bootstrap.domain.BaseEntity;
 import org.springframework.context.annotation.Configuration;
 
-import javax.annotation.Resource;
-
 /**
  * MybatisPlus 配置类
  *
@@ -18,8 +16,9 @@ import javax.annotation.Resource;
 @Configuration
 public class MybatisPlusConfig implements MybatisPlusPropertiesCustomizer {
 
-    @Resource
-    private IdentifierGenerator idGenerator;
+    private final IdentifierGenerator idGenerator;
+
+    public MybatisPlusConfig(IdentifierGenerator idGenerator) {this.idGenerator = idGenerator;}
 
 
     @Override

@@ -1,7 +1,6 @@
 package com.caomu.bootstrap.config.security;
 
 import com.caomu.bootstrap.config.CaoMuProperties;
-import com.caomu.bootstrap.domain.BaseEntity;
 import com.caomu.bootstrap.domain.BaseUserDetail;
 import com.caomu.bootstrap.filter.RequestIdFilter;
 import com.caomu.bootstrap.filter.TokenFilter;
@@ -48,7 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final PasswordEncoder passwordEncoder;
 
-    private final TokenUtil<BaseEntity> baseEntityTokenUtil;
+    private final TokenUtil tokenUtil;
 
     private final RMapCache<Long, BaseUserDetail> authIdUserMap;
 
@@ -62,7 +61,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
 
     public WebSecurityConfig(PasswordEncoder passwordEncoder,
-                             TokenUtil<BaseEntity> baseEntityTokenUtil,
+                             TokenUtil tokenUtil,
                              CaoMuProperties caoMuProperties,
                              RMapCache<Long, BaseUserDetail> authIdUserMap,
                              RequestIdFilter requestIdFilter,
@@ -78,7 +77,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         this.successHandler           = successHandler;
         this.authenticationEntryPoint = authenticationEntryPoint;
         this.logoutSuccessHandler     = logoutSuccessHandler;
-        this.baseEntityTokenUtil      = baseEntityTokenUtil;
+        this.tokenUtil                = tokenUtil;
         this.caoMuProperties          = caoMuProperties;
         this.accessDeniedHandler      = accessDeniedHandler;
         this.authIdUserMap            = authIdUserMap;
@@ -99,7 +98,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .authenticated();
 
         // 添加JWT鉴权过滤器
-        http.addFilterAfter(new TokenFilter(baseEntityTokenUtil, authIdUserMap, authenticationManager()), SecurityContextPersistenceFilter.class)
+        http.addFilterAfter(new TokenFilter(tokenUtil, authIdUserMap, authenticationManager()), SecurityContextPersistenceFilter.class)
             // 请求id的过滤器
             .addFilterBefore(requestIdFilter, SecurityContextPersistenceFilter.class)
             // 不使用session

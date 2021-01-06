@@ -1,7 +1,6 @@
 package com.caomu.bootstrap.filter;
 
 import com.caomu.bootstrap.constant.CommonConstant;
-import com.caomu.bootstrap.domain.BaseEntity;
 import com.caomu.bootstrap.domain.BaseUserDetail;
 import com.caomu.bootstrap.token.TokenUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -30,11 +29,11 @@ public class TokenFilter extends BasicAuthenticationFilter {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(TokenFilter.class);
 
-    private final TokenUtil<BaseEntity> baseEntityTokenUtil;
+    private final TokenUtil baseEntityTokenUtil;
 
     private final RMapCache<Long, BaseUserDetail> mapCache;
 
-    public TokenFilter(TokenUtil<BaseEntity> baseEntityTokenUtil,
+    public TokenFilter(TokenUtil baseEntityTokenUtil,
                        RMapCache<Long, BaseUserDetail> authIdUserMap,
                        AuthenticationManager authenticationManager) {
 
@@ -52,12 +51,19 @@ public class TokenFilter extends BasicAuthenticationFilter {
         String token = request.getHeader(CommonConstant.HEADER_TOKEN_KEY);
         if (StringUtils.isNotBlank(token)) {
             token = token.replace(CommonConstant.TOKEN_PREFIX, "");
-            final BaseEntity entity = baseEntityTokenUtil.resolveToken(token);
-            if (mapCache.containsKey(entity.getId())) {
-                final BaseUserDetail baseUserDetail = mapCache.get(entity.getId());
+            Long tokenUserId;
+            try {
+                tokenUserId = baseEntityTokenUtil.resolveToken(token);
+            } catch (Exception exception) {
+                LOGGER.error("解析token异常:{}", token, exception);
+                filterChain.doFilter(request, response);
+                return;
+            }
+            if (mapCache.containsKey(tokenUserId)) {
+                final BaseUserDetail baseUserDetail = mapCache.get(tokenUserId);
                 // 用户id多个token
                 if (Objects.equals(baseUserDetail.getToken(), token)) {
-                    final Authentication authentication = new UsernamePasswordAuthenticationToken(entity.getId(), null, baseUserDetail.getAuthorities());
+                    final Authentication authentication = new UsernamePasswordAuthenticationToken(tokenUserId, null, baseUserDetail.getAuthorities());
                     //存放认证信息，如果没有走这一步，下面的doFilter就会提示登录了
                     SecurityContextHolder.getContext()
                                          .setAuthentication(authentication);
