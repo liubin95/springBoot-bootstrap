@@ -10,9 +10,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.caomu</groupId>
-    <artifactId>bootstrap</artifactId>
-    <version>0.0.1</version>
-    <name>bootstrap</name>
+    <artifactId>web-spring-boot-starter</artifactId>
+    <version>1.0.0</version>
+    <name>web-spring-boot-starter</name>
     <description>springBoot 脚手架</description>
 
     <properties>
